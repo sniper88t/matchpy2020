@@ -35,7 +35,6 @@ django-registration==3.1
 django-thumbs-v2==0.4.1
 django-widget-tweaks==1.4.8
 djangorestframework==3.11.0
-djangorestframework-simplejwt==4.6.0
 dnspython==1.16.0
 et-xmlfile==1.0.1
 eventlet==0.27.0
