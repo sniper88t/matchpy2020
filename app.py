@@ -10,9 +10,10 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 import time
 from sys import platform
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 
 # Read CSV File
 def read_CSV(file, json_file):
