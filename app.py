@@ -84,7 +84,10 @@ def index():
 @app.route('/postmates/scores', methods=['GET'])
 def postmate_scores():
     #driver = initChromeDriver()
+    arrData = []
     itemlist =[]
+    trendRank=[]
+    rankChange=[]
     #driver = webdriver.Chrome("chromedriver.exe")
     url = "https://www.cbssports.com/college-football/rankings/index/"
     try:
@@ -92,29 +95,56 @@ def postmate_scores():
         tree = html.fromstring(page.content)
 
         pagetitles = tree.xpath('.//*[@id="TableBase"]/h4/text()')
-        print(len(pagetitles))
+        #print(len(pagetitles))
         index = 0
         for title in pagetitles:
-            print(title.strip())
+            #print(title.strip())
             index += 1
-            print(index)
-            print(title.strip().find("CBS Sports Ranking"))
+            #print(index)
+            #print(title.strip().find("CBS Sports Ranking"))
             if title.strip().find("CBS Sports Ranking") != -1 and index == 5:
                 # hrefs = tree.xpath('//*[@id="TableBase"]/div[1]/div/table/tbody/tr[1]/td[2]/span/div/div[2]/div/span/a/text()')
                 # hrefs = tree.xpath('.//div[contains(@id, "TableBase") and 3]//span[@class="TeamName"]/a/text()')
                 hrefs = tree.xpath(
                     './/div[contains(@class, "TableBaseWrapper") and position()=3]//span[@class="TeamName"]/a/text()')
-                print(len(hrefs))
+                #print(len(hrefs))
                 for href in hrefs:
-                    print(href)
+                    #print(href)
                     itemlist.append(href)
             else:
                 print("Not found!")
 
+        for x in range(1, 25):
+            trendRanknum = tree.xpath(
+                    './/div[contains(@class, "TableBaseWrapper") and position()=3]//tr[@class="TableBase-bodyTr" and position()='+ str(x) +']//span[@class="CellPollTrend-rank"]/text()')
+            print(trendRanknum)
+            trendRank.append(trendRanknum)
+
+            downrank = tree.xpath(
+                './/div[contains(@class, "TableBaseWrapper") and position()=3]//tr[@class="TableBase-bodyTr" and position()='+ str(x) +']//span[contains(@class,"CellPollTrend-rankChange--down")]')
+            uprank = tree.xpath(
+                './/div[contains(@class, "TableBaseWrapper") and position()=3]//tr[@class="TableBase-bodyTr" and position()=' + str(
+                    x) + ']//span[contains(@class,"CellPollTrend-rankChange--up")]')
+
+            if len(uprank) == 1:
+                print("up")
+                rankChange.append("up")
+            elif len(downrank) == 1:
+                print("down")
+                rankChange.append("down")
+            else:
+                print("nochange")
+                rankChange.append("nochange")
+
+
+
     except NoSuchElementException:
         print('No found Element')
         #driver.quit()
-    json_numbers = json.dumps(itemlist)
+    arrData.append(itemlist)
+    arrData.append(trendRank)
+    arrData.append(rankChange)
+    json_numbers = json.dumps(arrData)
     print(json_numbers)
 
     return json_numbers
